@@ -1,0 +1,4 @@
+tkdesigner
+requests
+pathlib
+os
