@@ -43,14 +43,14 @@ def send():
         entry_2.delete("1.0", tk.END)  
         entry_2.insert(tk.END, "ERROR!(City not found!)") 
         showerror(title="Error",message="City not found!")
-        image_image_1 = PhotoImage(file=relative_to_assets("image_3.png"))
+        image_image_1 = PhotoImage(file=relative_to_assets("image_10.png"))
         canvas.itemconfig(image_1, image=image_image_1)
 
     elif entry_1.get() == "":
         entry_2.delete("1.0", tk.END)  
         entry_2.insert(tk.END, "ERROR!(City input is empty!)")
         showerror(title="Error",message="input is empty!")
-        image_image_1 = PhotoImage(file=relative_to_assets("image_4.png"))
+        image_image_1 = PhotoImage(file=relative_to_assets("image_10.png"))
         canvas.itemconfig(image_1, image=image_image_1)
     else:
         a = data["main"]
