@@ -1,37 +1,38 @@
 from os import path
 import tkinter as tk
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Canvas, Entry, Text, Button, PhotoImage
 from tkinter.messagebox import showerror
 from pathlib import Path
 import requests
 
-
 api_key = "7e26fee9663087f9c0a3e904ff0f5764"
 base_url = "https://api.openweathermap.org/data/2.5/weather?q="
-
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r".\assets\frame0")
 
-
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
+def change_text_color(color):
+    canvas.itemconfig(text_rect_1, fill=color)
+    canvas.itemconfig(text_rect_2, fill=color)
+    canvas.itemconfig(text_rect_3, fill=color)
 
 def change_button_image(file):
     try:
         image = PhotoImage(file=relative_to_assets(file))
         button_1.config(image=image)
-        button_1.image = image  # نگهداری از مرجع به تصویر تا از مشکل garbage collection جلوگیری شود
+        button_1.image = image
     except tk.TclError as e:
         print(f"Error loading image: {e}")
-
 
 def change_canvas_color(color):
     canvas.itemconfig(canvas_rect, fill=color)
 
-
 def send():
+    global image_image_1
+
     cityname = entry_1.get()
     url = base_url + cityname + "&appid=" + api_key
 
@@ -40,8 +41,17 @@ def send():
 
     if data["cod"] == "404":
         entry_2.delete("1.0", tk.END)  
-        entry_2.insert(tk.END, "ERROR!") 
+        entry_2.insert(tk.END, "ERROR!(City not found!)") 
         showerror(title="Error",message="City not found!")
+        image_image_1 = PhotoImage(file=relative_to_assets("image_3.png"))
+        canvas.itemconfig(image_1, image=image_image_1)
+
+    elif entry_1.get() == "":
+        entry_2.delete("1.0", tk.END)  
+        entry_2.insert(tk.END, "ERROR!(City input is empty!)")
+        showerror(title="Error",message="input is empty!")
+        image_image_1 = PhotoImage(file=relative_to_assets("image_4.png"))
+        canvas.itemconfig(image_1, image=image_image_1)
     else:
         a = data["main"]
 
@@ -55,14 +65,59 @@ def send():
         d = w[0]["description"]
 
 
-
-        
         entry_2.delete("1.0", tk.END)  
         entry_2.insert(tk.END, f"Temp: {round(tc, 2)} C\n")
         entry_2.insert(tk.END, f"Pressure: {p} HPA\n")
         entry_2.insert(tk.END, f"Humidity: {h} %\n")
         entry_2.insert(tk.END, f"Speed: {s} M/S\n")
         entry_2.insert(tk.END, f"Description: {d}")
+
+        if d == "clear sky":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_2.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "few clouds":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "overcast clouds":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_3.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "Broken clouds":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_3.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "drizzle":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_4.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "rain":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_5.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "moderate rain":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_5.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "shower rain":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_4.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "light rain":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_4.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "thunderstorm":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_6.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "snow":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_7.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "light snow":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_7.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        elif d == "mist":
+            image_image_1 = PhotoImage(file=relative_to_assets("image_8.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+        else:
+            image_image_1 = PhotoImage(file=relative_to_assets("image_9.png"))
+            canvas.itemconfig(image_1, image=image_image_1)
+
+
+
+
 
 
 window = tk.Tk()
@@ -71,7 +126,6 @@ window.geometry("600x400")
 window.configure(bg = "#FFFFFF")
 window.title("LABZ weather")
 window.iconbitmap(relative_to_assets("if-weather-2-2682849_90781.ico"))
-
 
 canvas = Canvas(
     window,
@@ -92,17 +146,15 @@ canvas_rect = canvas.create_rectangle(
     fill="#0038FF",
     outline="")
 
-
-
 image_image_1 = PhotoImage(
-    file=relative_to_assets("image_1.png"))
+    file = relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
     100.0,
     90.0,
     image=image_image_1
 )
 
-canvas.create_text(
+text_rect_1 = canvas.create_text(
     50.0,
     191.0,
     anchor="nw",
@@ -111,7 +163,7 @@ canvas.create_text(
     font=("Inter", 15 * -1)
 )
 
-canvas.create_text(
+text_rect_2 = canvas.create_text(
     29.0,
     233.0,
     anchor="nw",
@@ -148,7 +200,6 @@ entry_1.place(
     width=285.0,
     height=33.0
 )
-
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
 button_1 = Button(
@@ -185,7 +236,7 @@ entry_2.place(
     height=148.0
 )
 
-canvas.create_text(
+text_rect_3 = canvas.create_text(
     12.0,
     374.0,
     anchor="nw",
@@ -209,7 +260,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: change_canvas_color("#0038FF") or change_button_image("button_1.png"),
+    command=lambda: change_canvas_color("#0038FF") or change_button_image("button_1.png") or change_text_color("#FFFFFF"),
     relief="flat"
 )
 button_2.place(
@@ -225,7 +276,7 @@ button_3 = Button(
     image=button_image_3,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: change_canvas_color("#00FFB2") or change_button_image("button_1_2.png"),
+    command=lambda: change_canvas_color("#00FFB2") or change_button_image("button_1_2.png") or change_text_color("#393939"),
     relief="flat"
 )
 button_3.place(
@@ -241,7 +292,7 @@ button_4 = Button(
     image=button_image_4,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: change_canvas_color("#FF006B") or change_button_image("button_1_3.png"),
+    command=lambda: change_canvas_color("#FF006B") or change_button_image("button_1_3.png") or change_text_color("#FFFFFF"),
     relief="flat"
 )
 button_4.place(
@@ -257,7 +308,8 @@ button_5 = Button(
     image=button_image_5,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: change_canvas_color("#BD00FF") or change_button_image("button_1_4.png")
+    command=lambda: change_canvas_color("#BD00FF") or change_button_image("button_1_4.png") or change_text_color("#FFFFFF"),
+    relief="flat"
 )
 button_5.place(
     x=330.0,
@@ -272,7 +324,7 @@ button_6 = Button(
     image=button_image_6,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: change_canvas_color("#FF8A00") or change_button_image("button_1_5.png"),
+    command=lambda: change_canvas_color("#FF8A00") or change_button_image("button_1_5.png") or change_text_color("#FFFFFF"),
     relief="flat"
 )
 button_6.place(
@@ -282,14 +334,12 @@ button_6.place(
     height=15.0
 )
 
-
 lblcitynotfound = tk.Label(master=window)
 lblt = tk.Label(master=window)
 lblp = tk.Label(window)
 lblh = tk.Label(window)
 lbls = tk.Label(window)
 lbld = tk.Label(window)
-
 
 window.resizable(False, False)
 window.mainloop()

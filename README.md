@@ -27,18 +27,9 @@ Run `gui.py`
 
 
 
-## updates
-
-1- add error massage
-
-2- change backgraond color 
-
-
-
-
 ## Screenshots
 
-![ScreenShot-App](ScreenShot.png)
+![Screenshot 2023-12-15 210026](https://github.com/alikm2314/LABZ-Weather/assets/130704439/d94bf6a9-8525-48b5-ae4b-7a0a7d235316)
 
 
 
